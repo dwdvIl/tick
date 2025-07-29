@@ -49,9 +49,12 @@ love.run = function()
       tick.tick = tick.tick + 1
       if love.update then love.update(tick.rate) end
     end
-
-    while tick.framerate and timer.getTime() - lastframe < 1 / tick.framerate do
-      timer.sleep(.0005)
+    
+    if tick.framerate then 
+      local affinity = math.min(0.85, 0.96655 - 0.0019425 * tick.framerate)
+      while timer.getTime() - lastframe < 1 / tick.framerate do
+        if timer.getTime() - lastframe <  1 / tick.framerate * affinity then timer.sleep(0.001) end
+      end
     end
 
     lastframe = timer.getTime()
